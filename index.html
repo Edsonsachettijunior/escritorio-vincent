@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vincent Consultoria — Pearson Specter Litt</title>
+<style>
+:root {
+  --navy: #1B2A4A;
+  --navy-light: #2D4373;
+  --gold: #C9A84C;
+  --gold-dark: #A88B3D;
+  --bg: #0D1B2A;
+  --card: #152238;
+  --card-hover: #1C2E4A;
+  --text: #E8E8E8;
+  --muted: #8899AA;
+  --green: #27AE60;
+  --yellow: #F39C12;
+  --red: #E74C3C;
+  --blue: #3498DB;
+  --purple: #9B59B6;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI',-apple-system,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+.topnav { background:linear-gradient(135deg,var(--navy),var(--navy-light)); padding:12px 30px; border-bottom:3px solid var(--gold); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+.topnav h1 { font-size:20px; color:var(--gold); letter-spacing:2px; }
+.topnav .tabs { display:flex; gap:8px; }
+.topnav .tab { background:none; border:1px solid rgba(201,168,76,0.3); color:var(--muted); padding:6px 16px; border-radius:20px; cursor:pointer; font-size:12px; transition:all 0.3s; }
+.topnav .tab:hover, .topnav .tab.active { background:var(--gold); color:var(--navy); border-color:var(--gold); font-weight:700; }
+.topnav .pct { font-size:22px; color:var(--gold); font-weight:700; }
+.topnav .live { color:var(--green); font-size:10px; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+.page { display:none; max-width:1300px; margin:0 auto; padding:20px; }
+.page.active { display:block; }
+
+.sprint { padding:15px 25px; background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05)); border:1px solid rgba(201,168,76,0.3); border-radius:12px; margin-bottom:20px; }
+.sprint h3 { color:var(--gold); font-size:14px; margin-bottom:6px; }
+.sprint p { font-size:13px; color:var(--muted); }
+.sprint .dl { color:var(--gold); font-weight:700; }
+
+.section-title { color:var(--gold); font-size:13px; text-transform:uppercase; letter-spacing:3px; margin:20px 0 12px 5px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:20px; }
+
+.room { background:var(--card); border-radius:12px; padding:18px; border:1px solid rgba(201,168,76,0.15); cursor:pointer; transition:all 0.3s; position:relative; }
+.room:hover { background:var(--card-hover); border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 25px rgba(0,0,0,0.3); }
+.room .icon { font-size:26px; margin-bottom:6px; }
+.room .name { font-size:15px; font-weight:700; color:var(--gold); }
+.room .role { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+.pbar { width:100%; height:7px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden; margin-bottom:6px; }
+.pfill { height:100%; border-radius:4px; transition:width 0.8s ease; }
+
+.detail { display:none; background:var(--card); border:1px solid var(--gold); border-radius:12px; padding:25px; margin:10px 0 20px; }
+.detail.active { display:block; }
+.detail h2 { color:var(--gold); margin-bottom:15px; font-size:18px; }
+.detail table { width:100%; border-collapse:collapse; margin-bottom:15px; }
+.detail th { text-align:left; padding:6px 10px; border-bottom:1px solid rgba(201,168,76,0.3); color:var(--gold); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+.detail td { padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.05); font-size:12px; }
+.done { color:var(--green); } .pend { color:var(--yellow); } .todo { color:var(--red); }
+.cbtn { float:right; background:none; border:1px solid var(--muted); color:var(--muted); padding:4px 12px; border-radius:6px; cursor:pointer; font-size:11px; }
+.cbtn:hover { border-color:var(--gold); color:var(--gold); }
+
+.sop-card { background:var(--card); border-radius:12px; padding:20px; margin-bottom:14px; border-left:4px solid var(--green); }
+.sop-card.pendente { border-left-color:var(--yellow); }
+.sop-card h3 { color:var(--gold); font-size:15px; margin-bottom:6px; }
+.sop-card p { font-size:12px; color:var(--muted); }
+.sop-card .sop-data { font-size:11px; color:var(--green); margin-top:4px; }
+
+.org { text-align:center; padding:30px 0; }
+.org-card { display:inline-block; background:var(--card); border:2px solid var(--gold); border-radius:12px; padding:15px 25px; margin:5px; text-align:center; min-width:140px; }
+.org-card .oname { color:var(--gold); font-weight:700; font-size:14px; }
+.org-card .orole { color:var(--muted); font-size:11px; }
+.org-card .opct { font-size:18px; font-weight:700; margin-top:5px; }
+.org-line { border-left:2px solid var(--gold); height:30px; margin:0 auto; width:0; }
+.org-row { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin:10px 0; }
+
+.flow { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:10px 0; }
+.flow-step { background:var(--card); border:1px solid rgba(201,168,76,0.3); border-radius:8px; padding:8px 14px; font-size:12px; text-align:center; min-width:100px; }
+.flow-step.active { border-color:var(--gold); background:rgba(201,168,76,0.1); }
+.flow-arrow { color:var(--gold); font-size:18px; }
+
+.footer { text-align:center; padding:20px; color:var(--muted); font-size:11px; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px; }
+
+/* NOVOS — Campos visuais por agente */
+.agent-meta { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0 0; }
+.agent-meta-full { grid-column:1/-1; }
+.meta-box { background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.18); border-radius:8px; padding:12px 14px; }
+.meta-box h4 { color:var(--gold); font-size:10px; text-transform:uppercase; letter-spacing:2px; margin-bottom:7px; }
+.meta-box p { font-size:12px; color:var(--muted); line-height:1.6; }
+.meta-box ul { list-style:none; padding:0; margin:0; }
+.meta-box ul li { font-size:12px; color:var(--muted); padding:2px 0; line-height:1.5; }
+.meta-box ul li::before { content:"→ "; color:var(--gold); font-size:11px; }
+.como-usar-box { background:rgba(39,174,96,0.08); border:1px solid rgba(39,174,96,0.25); border-radius:8px; padding:11px 14px; margin-top:10px; }
+.como-usar-box h4 { color:#27AE60; font-size:10px; text-transform:uppercase; letter-spacing:2px; margin-bottom:5px; }
+.como-usar-box p { font-size:13px; color:#27AE60; font-weight:600; }
+
+/* NOVOS — Aba Próximos Passos */
+.prox-card { background:var(--card); border-radius:12px; padding:18px; margin-bottom:12px; border-left:4px solid var(--gold); }
+.prox-card.urgente { border-left-color:var(--red); }
+.prox-card.alta { border-left-color:var(--yellow); }
+.prox-card.media { border-left-color:var(--blue); }
+.prox-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; }
+.prox-titulo { color:var(--text); font-size:15px; font-weight:700; }
+.prox-badge { font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:1px; }
+.badge-urgente { background:rgba(231,76,60,0.2); color:var(--red); }
+.badge-alta { background:rgba(243,156,18,0.2); color:var(--yellow); }
+.badge-media { background:rgba(52,152,219,0.2); color:var(--blue); }
+.prox-desc { font-size:12px; color:var(--muted); margin-bottom:8px; line-height:1.5; }
+.prox-footer { display:flex; gap:16px; font-size:11px; }
+.prox-footer span { color:var(--muted); }
+.prox-footer strong { color:var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div>
+    <h1>VINCENT CONSULTORIA</h1>
+    <span class="live" id="nav-sessao">● Carregando...</span>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showPage('escritorio')">Escritório</button>
+    <button class="tab" onclick="showPage('organograma')">Equipe</button>
+    <button class="tab" onclick="showPage('sops')">SOPs & Processos</button>
+    <button class="tab" onclick="showPage('fluxos')">Fluxos</button>
+    <button class="tab" onclick="showPage('proximos')">🎯 Próximos</button>
+  </div>
+  <div style="text-align:right">
+    <div class="pct" id="nav-pct">—</div>
+    <div style="font-size:11px;color:var(--muted)" id="nav-horas">—</div>
+  </div>
+</div>
+
+<div id="page-escritorio" class="page active"></div>
+<div id="page-organograma" class="page"></div>
+<div id="page-sops" class="page"></div>
+<div id="page-fluxos" class="page"></div>
+<div id="page-proximos" class="page"></div>
+
+<div class="footer" id="footer">VINCENT CONSULTORIA — Pearson Specter Litt</div>
+
+<script src="dados_escritorio.js"></script>
+<script>
+const CORES = { green:'#27AE60', yellow:'#F39C12', red:'#E74C3C', blue:'#3498DB', gold:'#C9A84C', purple:'#9B59B6' };
+const COR_CLASS = { green:'done', yellow:'pend', red:'todo', blue:'done', gold:'done' };
+
+function corPct(p) { return p >= 80 ? 'green' : p >= 50 ? 'yellow' : 'red'; }
+
+function renderCard(a, showBorder) {
+  const c = a.cor || corPct(a.pct);
+  const borderStyle = a.borda ? `border-left:4px solid ${CORES[a.borda]}` : '';
+  const label = a.status_label
+    ? `<span style="color:${CORES[c]};font-weight:700">${a.status_label}</span><span style="color:var(--muted)">${a.status_sub||''}</span>`
+    : `<span style="color:${CORES[c]};font-weight:700">${a.pct}%</span><span style="color:var(--muted)">~${a.horas}h</span>`;
+  return `<div class="room" style="${borderStyle}" onclick="tog('${a.id}')">
+    <div class="icon">${a.icon}</div><div class="name">${a.nome}</div><div class="role">${a.role}</div>
+    <div class="pbar"><div class="pfill" style="width:${a.pct}%;background:${CORES[c]}"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px">${label}</div>
+  </div>`;
+}
+
+function renderDetail(a) {
+  if (!a.itens || !a.itens.length) {
+    if (a.id === 'harvey') {
+      return `<div id="d-${a.id}" class="detail">
+        <button class="cbtn" onclick="tog('${a.id}')">✕</button>
+        <h2>${a.icon} ${a.nome} (Edson) — O Closer</h2>
+        <p style="color:var(--muted);margin-top:10px;font-size:14px;">
+          Harvey vende. O resto da equipe cuida de tudo pra ele vender tranquilo.<br><br>
+          <strong style="color:var(--gold)">Rotina:</strong> 1h30/semana gestão (segunda + sexta). Resto: 3-5 reuniões/dia.<br><br>
+          <strong style="color:var(--gold)">AP Filtro:</strong> 20 min pra lead frio. Completa 45 min pra quente.<br><br>
+          <em style="color:var(--gold)">"I don't have dreams, I have goals."</em>
+        </p>
+      </div>`;
+    }
+    return '';
+  }
+  const rows = a.itens.map(i => {
+    const st = i.ok ? '<td class="done">✅</td>' : '<td class="todo">❌</td>';
+    const fase = i.fase ? `<td>${i.fase}</td>` : '<td>—</td>';
+    return `<tr><td>${i.txt}</td>${st}${fase}</tr>`;
+  }).join('');
+
+  let linkHtml = '';
+  if (a.link) {
+    linkHtml = `<div style="margin:12px 0;padding:10px 16px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);border-radius:8px;display:inline-block">
+      <a href="${a.link}" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:700;font-size:14px">${a.link_label || '🔗 Abrir'}</a>
+    </div>`;
+  }
+
+  // CAMPOS VISUAIS NOVOS: o que faz, o que precisa, o que entrega, como usar
+  let metaHtml = '';
+  if (a.descricao || a.alimentar || a.entrega) {
+    const descBox = a.descricao ? `<div class="meta-box agent-meta-full"><h4>🎯 O que este agente faz</h4><p>${a.descricao}</p></div>` : '';
+    const alimentarItems = (a.alimentar||[]).map(i => `<li>${i}</li>`).join('');
+    const alimentarBox = alimentarItems ? `<div class="meta-box"><h4>📥 Precisa receber</h4><ul>${alimentarItems}</ul></div>` : '';
+    const entregaItems = (a.entrega||[]).map(i => `<li>${i}</li>`).join('');
+    const entregaBox = entregaItems ? `<div class="meta-box"><h4>📤 O que entrega</h4><ul>${entregaItems}</ul></div>` : '';
+    const comoUsarBox = a.como_usar ? `<div class="como-usar-box"><h4>🚀 Como usar agora</h4><p>${a.como_usar}</p></div>` : '';
+    metaHtml = `<div class="agent-meta">${descBox}${alimentarBox}${entregaBox}</div>${comoUsarBox}`;
+  }
+
+  let rotinasHtml = '';
+  if (a.rotinas && a.rotinas.length) {
+    const rRows = a.rotinas.map(r => `<tr><td style="padding:6px 10px;font-size:13px">${r.txt}</td><td style="padding:6px 10px;font-size:12px;color:var(--muted)">${r.freq}</td></tr>`).join('');
+    rotinasHtml = `<div style="margin-top:16px">
+      <h3 style="color:var(--gold);font-size:13px;margin-bottom:8px;text-transform:uppercase;letter-spacing:2px">📋 Rotinas de Atualização</h3>
+      <table style="width:100%"><tr><th style="text-align:left;padding:6px 10px">O que fazer</th><th style="text-align:left;padding:6px 10px">Frequência</th></tr>${rRows}</table>
+    </div>`;
+  }
+
+  return `<div id="d-${a.id}" class="detail">
+    <button class="cbtn" onclick="tog('${a.id}')">✕</button>
+    <h2>${a.icon} ${a.nome} — ${a.role} — ${a.pct}%</h2>
+    ${linkHtml}
+    ${metaHtml}
+    <div style="margin-top:14px"><h3 style="color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">📋 Itens de construção</h3>
+    <table><tr><th>Item</th><th>Status</th><th>Fase</th></tr>${rows}</table></div>
+    ${rotinasHtml}
+  </div>`;
+}
+
+function renderEscritorio(d) {
+  const page = document.getElementById('page-escritorio');
+  let h = `<div class="sprint">
+    <h3>🎯 SPRINT: ${d.sprint.titulo}</h3>
+    <p>${d.sprint.status} | <span class="dl">Próximo: ${d.sprint.proximo}</span></p>
+  </div>`;
+
+  h += '<div class="section-title">Sócios</div><div class="grid">';
+  d.socios.forEach(a => h += renderCard(a, true));
+  h += '</div>';
+
+  h += '<div class="section-title">Especialistas</div><div class="grid">';
+  d.especialistas.forEach(a => h += renderCard(a));
+  h += '</div>';
+
+  h += '<div class="section-title">Operações</div><div class="grid">';
+  d.operacoes.forEach(a => h += renderCard(a));
+  h += '</div>';
+
+  const todos = [...d.socios, ...d.especialistas, ...d.operacoes];
+  todos.forEach(a => h += renderDetail(a));
+
+  page.innerHTML = h;
+}
+
+function renderOrganograma(d) {
+  const page = document.getElementById('page-organograma');
+  const todos = [...d.socios, ...d.especialistas, ...d.operacoes];
+  const donna = d.socios[0];
+
+  let h = '<div style="padding:20px 0"><div class="org">';
+  h += `<div class="org-card" style="border-color:var(--gold);border-width:3px">
+    <div class="oname">${donna.nome}</div><div class="orole">${donna.role}</div>
+    <div class="opct" style="color:${CORES[donna.cor]}">${donna.pct}%</div>
+  </div>`;
+  h += '<div class="org-line"></div>';
+
+  h += '<div class="org-row">';
+  d.socios.slice(1).forEach(a => {
+    const label = a.status_label || (a.pct + '%');
+    h += `<div class="org-card"><div class="oname">${a.nome}</div><div class="orole">${a.role}</div><div class="opct" style="color:${CORES[a.cor]}">${label}</div></div>`;
+  });
+  h += '</div><div class="org-line"></div>';
+
+  h += '<div class="section-title" style="text-align:center">Especialistas</div><div class="org-row">';
+  d.especialistas.forEach(a => {
+    h += `<div class="org-card"><div class="oname">${a.nome}</div><div class="orole">${a.role}</div><div class="opct" style="color:${CORES[a.cor]}">${a.pct}%</div></div>`;
+  });
+  h += '</div><div class="org-line"></div>';
+
+  h += '<div class="section-title" style="text-align:center">Operações</div><div class="org-row">';
+  d.operacoes.forEach(a => {
+    h += `<div class="org-card"><div class="oname">${a.nome}</div><div class="orole">${a.role}</div><div class="opct" style="color:${CORES[a.cor]}">${a.pct}%</div></div>`;
+  });
+  h += '</div></div></div>';
+
+  page.innerHTML = h;
+}
+
+function renderSOPs(d) {
+  const page = document.getElementById('page-sops');
+  let hOk = '<div class="section-title">SOPs Validados</div>';
+  let hPend = '<div class="section-title" style="margin-top:30px">SOPs a Criar</div>';
+
+  d.sops.forEach(s => {
+    const icon = s.status === 'ok' ? '✅' : '⬜';
+    const cls = s.status === 'ok' ? '' : ' pendente';
+    const dataLine = s.data ? `<div class="sop-data">Validado ${s.data}</div>` : '';
+    const card = `<div class="sop-card${cls}">
+      <h3>${icon} SOP ${s.num} — ${s.titulo}</h3>
+      <p>${s.desc}</p>
+      ${dataLine}
+    </div>`;
+    if (s.status === 'ok') hOk += card; else hPend += card;
+  });
+
+  page.innerHTML = hOk + hPend;
+}
+
+function renderFluxos(d) {
+  const page = document.getElementById('page-fluxos');
+  let h = '';
+  d.fluxos.forEach(f => {
+    h += `<div class="section-title">${f.titulo}</div><div class="flow">`;
+    f.etapas.forEach((e, i) => {
+      if (i > 0) h += '<div class="flow-arrow">→</div>';
+      const cls = e.ativo ? ' active' : '';
+      h += `<div class="flow-step${cls}">${e.txt}<br><small>${e.sub}</small></div>`;
+    });
+    h += '</div>';
+  });
+  page.innerHTML = h;
+}
+
+function renderProximos(d) {
+  if (!d.proximos || !d.proximos.length) return;
+  const page = document.getElementById('page-proximos');
+  const badgeMap = { 'URGENTE': 'urgente', 'ALTA': 'alta', 'MÉDIA': 'media' };
+  let h = '<div style="max-width:800px;margin:0 auto;padding:20px 0">';
+  h += '<div class="section-title">O que construir agora — por prioridade</div>';
+  d.proximos.forEach((p, i) => {
+    const cls = badgeMap[p.prioridade] || 'media';
+    const badgeCls = 'badge-' + cls;
+    h += `<div class="prox-card ${cls}">
+      <div class="prox-header">
+        <div class="prox-titulo">${i+1}. ${p.titulo}</div>
+        <span class="prox-badge ${badgeCls}">${p.prioridade}</span>
+      </div>
+      <p class="prox-desc">${p.descricao}</p>
+      <div class="prox-footer">
+        <span>👤 <strong>${p.responsavel}</strong></span>
+        <span>⏱️ <strong>${p.tempo}</strong></span>
+        <span>💥 ${p.impacto}</span>
+      </div>
+    </div>`;
+  });
+  h += '</div>';
+  page.innerHTML = h;
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function tog(id) {
+  const el = document.getElementById('d-' + id);
+  if (!el) return;
+  const isActive = el.classList.contains('active');
+  document.querySelectorAll('#page-escritorio .detail').forEach(d => d.classList.remove('active'));
+  if (!isActive) {
+    el.classList.add('active');
+    el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+}
+
+// RENDERIZA COM DADOS DO dados_escritorio.js (carregado via <script src>)
+const d = DADOS;
+document.getElementById('nav-sessao').textContent = `● LIVE — Sessão ${d.sessao}`;
+document.getElementById('nav-pct').textContent = d.total + '%';
+document.getElementById('nav-horas').textContent = `~${d.horas_restantes}h restantes`;
+document.getElementById('footer').innerHTML = `VINCENT CONSULTORIA — Pearson Specter Litt<br>Atualizado: ${d.data} | Sessão ${d.sessao} | ${d.total}% completo | Donna & Harvey`;
+renderEscritorio(d);
+renderOrganograma(d);
+renderSOPs(d);
+renderFluxos(d);
+renderProximos(d);
+</script>
+
+</body>
+</html>
